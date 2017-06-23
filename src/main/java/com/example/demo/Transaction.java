@@ -14,7 +14,7 @@ public class Transaction {
     private String action;
     @NotNull
     private long amount;
-    private long accountNum;
+    private String accountNum;
     @NotNull
     @Size(min=2, max=30)
     private String reason;
@@ -34,12 +34,15 @@ public class Transaction {
     public void setId(int id) {
         this.id = id;
     }
-    public long getAccountNum() {
+
+    public String getAccountNum() {
         return accountNum;
     }
-    public void setAccountNum(long accountNum) {
+
+    public void setAccountNum(String accountNum) {
         this.accountNum = accountNum;
     }
+
     public String getAction() {
         return action;
     }

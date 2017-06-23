@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by student on 6/23/17.
@@ -34,18 +35,20 @@ public class TransactionController {
     @PostMapping("/check")
     public String goLogin( Model model, @ModelAttribute Transaction transaction, Principal principal) {
         model.addAttribute(new Transaction());
+        String name = principal.getName().toString();
+        List<Transaction> values = transactionRepository.findAllByAccountNum(name);
 
-        Iterable<Transaction> values = transactionRepository.findByAccountNum(transaction.getAccountNum());
+        model.addAttribute("transactionList", values);
 
-        model.addAttribute("values", values);
-        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(transaction.getAccountNum());
-        model.addAttribute("transactionList", transactionList);
+        //Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(name);
+        //model.addAttribute("c", transactionList);
         return "transactionhistory";
          // need to add in conditional to tell it to go to the next page IF the account number is in the db
     }
     @RequestMapping("/transactionhistory")
-    public String goTransactionHistory( Model model, @ModelAttribute Transaction transaction) {
-        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(transaction.getAccountNum());
+    public String goTransactionHistory( Model model, @ModelAttribute Transaction transaction, Principal principal) {
+        String name = principal.getName().toString();
+        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(name);
         model.addAttribute("transactionList", transactionList);
         return "transactionhistory";
     }
@@ -57,13 +60,16 @@ public class TransactionController {
         return "withdraw";
     }
     @PostMapping("/withdraw")
-    public String postWithdraw(Model model, @ModelAttribute Transaction transaction)
+    public String postWithdraw(Model model, @ModelAttribute Transaction transaction,Principal principal)
     {
         model.addAttribute(new Transaction());
         transaction.setAmount(-transaction.getAmount());
         transaction.setAction("Withdraw");
-        Iterable<Transaction> balanceList = transactionRepository.findAmountSumByAccount();
+        String name = principal.getName().toString();
+        long balanceList = transactionRepository.findAmountSumByAccount(name);
         model.addAttribute("balancelist",balanceList);
+        transactionRepository.findAmountSumByAccount(name);
+
         transactionRepository.save(transaction);
         return "withdraw";
     }
@@ -74,11 +80,16 @@ public class TransactionController {
         return "deposit";
     }
     @PostMapping("/deposit")
-    public String postDeposit(Model model, @ModelAttribute Transaction transaction)
+    public String postDeposit(Model model, @ModelAttribute Transaction transaction, Principal principal)
     {
         model.addAttribute(new Transaction());
+        String name = principal.getName().toString();
+        transaction.setAccountNum(name);
         transaction.setAction("Deposit");
         transactionRepository.save(transaction);
+        long balanceList = transactionRepository.findAmountSumByAccount(name);
+        model.addAttribute("balancelist",balanceList);
+
         return "deposit";
     }
     @RequestMapping("/login")
