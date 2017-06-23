@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.Date;
 
 /**
@@ -23,18 +24,22 @@ public class TransactionController {
         model.addAttribute(new Transaction());
         return "index";
     }
-    @GetMapping("/login")
+    @GetMapping("/check")
     public String getLogin(Model model, @ModelAttribute Transaction transaction)
     {
         model.addAttribute(new Transaction());
 
         return "index";
     }
-    @PostMapping("/login")
-    public String goLogin( Model model, @ModelAttribute Transaction transaction) {
+    @PostMapping("/check")
+    public String goLogin( Model model, @ModelAttribute Transaction transaction, Principal principal) {
         model.addAttribute(new Transaction());
+
         Iterable<Transaction> values = transactionRepository.findByAccountNum(transaction.getAccountNum());
+
         model.addAttribute("values", values);
+        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(transaction.getAccountNum());
+        model.addAttribute("transactionList", transactionList);
         return "transactionhistory";
          // need to add in conditional to tell it to go to the next page IF the account number is in the db
     }
@@ -63,7 +68,7 @@ public class TransactionController {
         return "withdraw";
     }
     @GetMapping("/deposit")
-    public String getDeposit(Model model, @ModelAttribute Transaction transaction)
+    public String getDeposit(Principal principal, Model model, @ModelAttribute Transaction transaction)
     {
         model.addAttribute(new Transaction());
         return "deposit";
@@ -76,31 +81,8 @@ public class TransactionController {
         transactionRepository.save(transaction);
         return "deposit";
     }
-/*  @GetMapping(/withdraw)
-        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(transaction.getAccountNum());
-        model.addAttribute("transactionList", transactionList);
-    @RequestMapping("/transactionhistory")
-    public String goUserSubmission( Model model) {
-        Iterable<Link> linkListUser = linkRepository.findAllByUser("Zack");
-        model.addAttribute("linkListUser", linkListUser);
-        return "Usersubmissions";
-    }
-
-    @PostMapping("/addsubmit")
-    public String addSubmit(@ModelAttribute Link link, Model model) {
-        link.setTime(new Date());
-        model.addAttribute(new Link());
-        linkRepository.save(link);
-        Iterable<Link> linkList = linkRepository.findAllOrderedByTime();
-        model.addAttribute("linkList", linkList);
-
-        return "index";
-    }
-
     @RequestMapping("/login")
     public String login() {
         return "login";
     }
-}
-*/
 }

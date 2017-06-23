@@ -16,7 +16,7 @@
 <body>
 
 
-<form th:action = "@{/login}" th:object = "${transaction}" method = "post">
+<form th:action = "@{/check}" th:object = "${transaction}" method = "post">
     <div class="form-group">
         <label for="AccountNum">Account Number</label>
         <input type="text" class="form-control" id="AccountNum" placeholder="Account Number" th:field="*{accountNum}"/>
