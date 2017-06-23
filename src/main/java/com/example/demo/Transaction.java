@@ -18,6 +18,16 @@ public class Transaction {
     @NotNull
     @Size(min=2, max=30)
     private String reason;
+    private long balance;
+
+    public long getBalance() {
+        return balance;
+    }
+
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
+
     public long getId() {
         return id;
     }

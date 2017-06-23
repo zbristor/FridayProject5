@@ -15,7 +15,6 @@ import java.util.Date;
  */
 @Controller
 public class TransactionController {
-    long number;
     @Autowired
     private TransactionRepository transactionRepository;
 
@@ -28,31 +27,27 @@ public class TransactionController {
     public String getLogin(Model model, @ModelAttribute Transaction transaction)
     {
         model.addAttribute(new Transaction());
+
         return "index";
     }
     @PostMapping("/login")
     public String goLogin( Model model, @ModelAttribute Transaction transaction) {
         model.addAttribute(new Transaction());
-        system.out.println(transaction.getAccountNum()+ "THis is the account num");
         Iterable<Transaction> values = transactionRepository.findByAccountNum(transaction.getAccountNum());
         model.addAttribute("values", values);
-        if(values!=null)
-        {
-            return "transactionhistory";
-        }
-
+        return "transactionhistory";
          // need to add in conditional to tell it to go to the next page IF the account number is in the db
-        return "index";
     }
     @RequestMapping("/transactionhistory")
     public String goTransactionHistory( Model model, @ModelAttribute Transaction transaction) {
-        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(0);
+        Iterable<Transaction> transactionList = transactionRepository.findAllByAccountNum(transaction.getAccountNum());
         model.addAttribute("transactionList", transactionList);
         return "transactionhistory";
     }
     @GetMapping("/withdraw")
     public String getWithdraw(Model model, @ModelAttribute Transaction transaction)
     {
+        transaction.setAmount(-transaction.getAmount());
         model.addAttribute(new Transaction());
         return "withdraw";
     }
@@ -60,7 +55,10 @@ public class TransactionController {
     public String postWithdraw(Model model, @ModelAttribute Transaction transaction)
     {
         model.addAttribute(new Transaction());
+        transaction.setAmount(-transaction.getAmount());
         transaction.setAction("Withdraw");
+        Iterable<Transaction> balanceList = transactionRepository.findAmountSumByAccount();
+        model.addAttribute("balancelist",balanceList);
         transactionRepository.save(transaction);
         return "withdraw";
     }

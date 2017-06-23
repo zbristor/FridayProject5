@@ -42,17 +42,15 @@
 <div class = "container">
     <table class="table">
         <th height="80"> Action  </th>
-        <th></th>
+
         <th height="80"> Amount  </th>
-        <th></th>
+
         <th height="80"> Reason  </th>
         <div th:each = "transaction: ${transactionList}">
             <tr>
-                <td>
-                    <a th:text =  "${transaction.action}" >Action  </a>
-                    <a th:text =  "${transaction.amount}">Amount </a>
-                    <a th:text =  "${transaction.reason}" >Reason </a>
-                </td>
+                <td> <a th:text =  "${transaction.action}" >Action  </a> </td>
+                <td> <a th:text =  "${transaction.amount}">Amount </a> </td>
+                <td> <a th:text =  "${transaction.reason}" >Reason </a> </td>
             </tr>
         </div>
     </table>

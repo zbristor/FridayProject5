@@ -14,4 +14,6 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     public List<Transaction> findByAccountNum(long accountNum);
     @Query
     public List<Transaction> findAllByAccountNum(long accountNum);
+    @Query( value = "select SUM(amount) from transaction where account_num=0", nativeQuery=true)
+    public List<Transaction> findAmountSumByAccount();
 }
